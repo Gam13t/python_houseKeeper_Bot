@@ -1,0 +1,12 @@
+# FOR MVP
+# TODO: DEFINE MAIN FUNCTIONALITY | high priority
+# TODO: ADD MAIN FUNCTIONALITY | high priority
+# TODO: (subtask) ADD ARGUMENT HANDLER TO INSERT FUNCTION | high priority
+# TODO: ADD DATABASE | high priority
+
+
+# FOR DEPLOY
+# TODO: EXPAND FUNCTIONALITY
+# TODO: ADD MEALS DATABASE AND IT'S FUNCTIONALITY
+# TODO: ADD ALARM (if it's possible without API) | other way - deploy simple API for this case
+# TODO: (subtask) BEAUTIFY USER INTERFACE | very low priority
