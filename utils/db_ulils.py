@@ -38,3 +38,13 @@ def balance_counter(bot, message):
 def users_counter(bot, message):
     pass
 
+
+def details_info_creator():
+    usernames = []
+    deposits = []
+    for doc in Roommate.find():
+        usernames += [doc['Name']]
+        deposits += [doc['Deposit']]
+
+    return usernames, deposits
+

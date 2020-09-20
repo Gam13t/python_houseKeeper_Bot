@@ -1,5 +1,6 @@
 import telebot
 import logging  # Just debugger that will be cut after deploy
+import requests, json
 from config import API_TOKEN
 from models.database import Roommate
 import utils.utils as u
@@ -26,7 +27,12 @@ def roommate_command_handler(message):
     telegram_id = message.from_user.id
 
     if db_u.database_unique_user(bot, message, telegram_id):
-        username = str(message.from_user.first_name) + " " + str(message.from_user.last_name)
+
+        if message.from_user.last_name is None:
+            username = str(message.from_user.first_name)
+        else:
+            username = str(message.from_user.first_name) + " " + str(message.from_user.last_name)
+
         Roommate.insert_one({"Name": str(username),
                              "Telegram_id": int(telegram_id),
                              "Deposit": int(0)
@@ -54,7 +60,11 @@ def balance_display(message):
 
 @bot.message_handler(commands=['details'])
 def balance_detail_display(message):
-    pass
+
+    username_list, deposit_list = db_u.details_info_creator()
+    reply_markup = u.keyboard_markup_setup(bot, message, username_list, deposit_list)
+    reply_markup = json.loads(reply_markup)
+    bot.send_message(message.chat.id, "All donations left: ", reply_markup=json.dumps(reply_markup))
 
 
 @bot.message_handler(func=lambda m: True)

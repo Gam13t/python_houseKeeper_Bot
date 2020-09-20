@@ -14,5 +14,12 @@ def extract_arg(arg, bot, message):
         return None
 
 
-def keyboard_markup_setup(bot, message):
-    pass
+def keyboard_markup_setup(bot, message, username_list, deposits_list):
+    reply_markup = "{\"inline_keyboard:["
+    for i in range(len(username_list)):
+        reply_markup += "[{\"text\": \"" + username_list[i] + " - " + str(deposits_list[i]) + "\", \"callback_data\": " \
+                                                                                          "\"test1\"}], "
+    reply_markup = reply_markup[:-2]
+    reply_markup += "]}"
+    return reply_markup
+
