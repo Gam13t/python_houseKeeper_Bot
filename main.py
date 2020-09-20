@@ -1,8 +1,9 @@
 import telebot
 import logging  # Just debugger that will be cut after deploy
 from config import API_TOKEN
-from models.database import db, Roommate
+from models.database import Roommate
 import utils.utils as u
+import utils.db_ulils as db_u
 
 logger = telebot.logger  # Just debugger that will be cut after deploy
 telebot.logger.setLevel(logging.DEBUG)  # Just debugger that will be cut after deploy
@@ -22,27 +23,38 @@ def help_command_handler(message):
 
 @bot.message_handler(commands=['roommate'])
 def roommate_command_handler(message):
-    telegram_id = message.user.id
+    telegram_id = message.from_user.id
 
-    if u.database_unique_user(bot, message, telegram_id, Roommate):
-        username = message.user.first_name + " " + message.user.last_name
-        Roommate.insert_one({"Name": username,
-                             "Telegram_id": telegram_id,
-                             "Deposit": 0
+    if db_u.database_unique_user(bot, message, telegram_id):
+        username = str(message.from_user.first_name) + " " + str(message.from_user.last_name)
+        Roommate.insert_one({"Name": str(username),
+                             "Telegram_id": int(telegram_id),
+                             "Deposit": int(0)
                              })
+        bot.send_message(message.chat.id, "Successfully added to database.")
     else:
         bot.send_message(message.chat.id, "You are already a roommate.")
 
 
 @bot.message_handler(commands=['insert'])
 def insert_command_handler(message):
-    message_content = message.text
-    arg = u.extract_arg(message_content, bot, message)
-    if arg is not None:
-        if u.pull_into_database(arg, bot, message):
-            bot.reply_to(message, "Ok, we got your transfer of " + str(arg))
-        else:
-            bot.send_message(message.chat.id, "Something went wrong... Try again later")
+    if db_u.in_database_checker(bot, message, message.from_user.id):
+        message_content = message.text
+        arg = u.extract_arg(message_content, bot, message)
+        if arg is not None:
+            db_u.pull_into_database(arg, bot, message, message.from_user.id)
+    else:
+        bot.send_message(message.chat.id, "You're not a roommate, to became a roommate - send /roommate...")
+
+
+@bot.message_handler(commands=['balance'])
+def balance_display(message):
+    db_u.balance_counter(bot, message)
+
+
+@bot.message_handler(commands=['details'])
+def balance_detail_display(message):
+    pass
 
 
 @bot.message_handler(func=lambda m: True)

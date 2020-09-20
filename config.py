@@ -1,2 +1,4 @@
-API_TOKEN = "1319539611:AAG3s-HUeED0CFypjVVIGQcxX_2ZTyuLpWE"
-ROOMMATES_DB_LINK = " "
+#TODO: before push change values to naming constants
+
+API_TOKEN = " "
+DB_LINK = " "
