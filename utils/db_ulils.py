@@ -1,10 +1,10 @@
 from models.database import Roommate
 
 
-def pull_into_database(arg, bot, message, telegram_id):
+def pull_into_database(arg, telegram_id):
     Roommate.update_one({"Telegram_id": telegram_id},
                         {'$inc': {'Deposit': arg}})
-    bot.send_message(message.chat.id, "We got your transfer of " + str(arg) + " UAH.")
+    return str(arg)
 
 
 def database_unique_user(bot, message, telegram_id):
@@ -24,19 +24,17 @@ def in_database_checker(bot, message, telegram_id):
         return True
 
 
-def balance_counter(bot, message):
+def balance_counter():
     pipe = [{'$group': {'_id': None, 'total': {'$sum': '$Deposit'}}}]
     cursor = Roommate.aggregate(pipeline=pipe)
-    for result_object in cursor:
-        bot.send_message(message.chat.id, "Totally right now we have " + str(result_object['total']) + " UAH. For more "
-                                                                                                       "information "
-                                                                                                       "about "
-                                                                                                       "donations type "
-                                                                                                       "/details.")
+    return cursor
 
 
-def users_counter(bot, message):
-    pass
+def users_counter():
+    usernames = []
+    for doc in Roommate.find():
+        usernames += [doc['Name']]
+    return len(usernames)
 
 
 def details_info_creator():
@@ -48,3 +46,8 @@ def details_info_creator():
 
     return usernames, deposits
 
+
+def deleting_from_deposit(spending):
+    users_among = users_counter()
+    shared_payment = int(spending / users_among)
+    return shared_payment
