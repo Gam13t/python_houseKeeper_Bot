@@ -50,4 +50,17 @@ def details_info_creator():
 def deleting_from_deposit(spending):
     users_among = users_counter()
     shared_payment = int(spending / users_among)
+    try:
+        Roommate.update_many({}, {"$inc": {"Deposit": (-1)*shared_payment}})
+    except:
+        print("Something went wrong...")
+
     return shared_payment
+
+
+def robbery():
+    try:
+        Roommate.update_many({}, {"$set": {"Deposit": 0}})
+        return True
+    except:
+        return False

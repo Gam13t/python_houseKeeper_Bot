@@ -85,6 +85,14 @@ def balance_detail_display(message):
     bot.send_message(message.chat.id, "Keep in mind, that changes won't be display here...")
 
 
+@bot.message_handler(commands=['robbery'])
+def purging_balance(message):
+    if db_u.robbery():
+        bot.send_message(message.chat.id, "All money got purged")
+    else:
+        bot.send_message(message.chat.id, "Something went wrong")
+
+
 @bot.message_handler(commands=['spending'])
 def spending_from_balance(message):
     telegram_id = message.from_user.id
@@ -106,4 +114,5 @@ def text_message_handler(message):
         bot.send_message(message.chat.id, "You better use commands, I can't understand you anyway...")
 
 
-bot.polling()
+
+bot.polling(NONE_STOP=True)
